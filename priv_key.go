@@ -37,6 +37,7 @@ type validatable interface {
 // +gen wrapper:"PrivKey,Impl[PrivKeyEd25519,PrivKeySecp256k1],ed25519,secp256k1"
 type PrivKeyInner interface {
 	AssertIsPrivKeyInner()
+	RawBytes() []byte
 	Bytes() []byte
 	Sign(msg []byte) Signature
 	PubKey() PubKey
@@ -52,6 +53,10 @@ var _ PrivKeyInner = PrivKeyEd25519{}
 type PrivKeyEd25519 [64]byte
 
 func (privKey PrivKeyEd25519) AssertIsPrivKeyInner() {}
+
+func (privKey PrivKeyEd25519) RawBytes() []byte {
+	return privKey[:]
+}
 
 func (privKey PrivKeyEd25519) Bytes() []byte {
 	return wire.BinaryBytes(PrivKey{privKey})
@@ -135,6 +140,10 @@ var _ PrivKeyInner = PrivKeySecp256k1{}
 type PrivKeySecp256k1 [32]byte
 
 func (privKey PrivKeySecp256k1) AssertIsPrivKeyInner() {}
+
+func (privKey PrivKeySecp256k1) RawBytes() []byte {
+	return privKey[:]
+}
 
 func (privKey PrivKeySecp256k1) Bytes() []byte {
 	return wire.BinaryBytes(PrivKey{privKey})
